@@ -13,8 +13,10 @@ def prepare_labels(part_info_dict, selected_participants):
     for participant in selected_participants:
         # Check if label exists, otherwise assign a default
         if 'label' in part_info_dict[participant]:
-            labels.append(part_info_dict[participant]['label'])
+            label = part_info_dict[participant]['label']
         else:
+            label = participant.split("_")[0]
             print(f"No label found for {participant}. Assigning default label.")
-            labels.append(0)  # Assign a default label if none found
+        if labels.count(label) == 0:
+            labels.append(label)
     return labels

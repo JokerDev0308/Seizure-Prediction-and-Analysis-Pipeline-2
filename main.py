@@ -30,7 +30,7 @@ if __name__ == "__main__":
             filtered_data = filter_data(df)  # Apply filtering to the data
             data_frames.append(filtered_data)  # Add filtered data to the list
         else:
-            print(f"No data loaded for {file}.")  # Print a message if loading fails
+            print(f"No data loaded for {file}")  # Print a message if loading fails
 
     # Combine all loaded data into a single DataFrame
     if data_frames:

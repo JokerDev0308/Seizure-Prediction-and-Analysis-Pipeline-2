@@ -45,13 +45,13 @@ def get_participant_info():
 
 def load_data(file, selected_channels=[]):
     """Load EEG data from a specified file, downloading it if not present locally."""
-    folder = file.split("_")[0]
-    local_filename = f"./database/{folder}/{file}.edf"
+    classes = file.split("_")[0]
+    local_filename = f"./database/{classes}/{file}.edf"
     os.makedirs(os.path.dirname(local_filename), exist_ok=True)
     # Check if the file already exists
     if not os.path.isfile(local_filename):
         print(f"Downloading {file}...")
-        url = f"https://physionet.org/physiobank/database/chbmit/{folder}/{file}.edf"
+        url = f"https://physionet.org/physiobank/database/chbmit/{classes}/{file}.edf"
         urlretrieve(url, local_filename)
     else:
         print(f"Loading {file} from local storage.")
