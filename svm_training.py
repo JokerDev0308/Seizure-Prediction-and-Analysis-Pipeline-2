@@ -1,23 +1,36 @@
-import numpy as np
-from sklearn.model_selection import train_test_split, StratifiedKFold
-from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, confusion_matrix
+import numpy as np
 
 def train_svm(X, y):
-    """Train an SVM model to classify seizure events."""
-    clf = SVC(kernel='linear', C=1)  # Initialize SVM classifier
-    X_rem, X_test, y_rem, y_test = train_test_split(X, y, test_size=0.25, random_state=100, stratify=y)
+    # Check for sufficient classes
+    unique_classes = np.unique(y)
+    if len(unique_classes) < 2:
+        raise ValueError("Need at least two classes for SVM.")
 
-    k_fold = StratifiedKFold(n_splits=5, shuffle=True, random_state=100)  # Initialize cross-validation
-    scores = []  # List to store scores for each fold
-
-    for train_index, val_index in k_fold.split(X_rem, y_rem):
-        X_train, X_val = X_rem.iloc[train_index], X_rem.iloc[val_index]  # Split into train/validation sets
-        y_train, y_val = y_rem.iloc[train_index], y_rem.iloc[val_index]
-        clf.fit(X_train, y_train)  # Fit the model to the training data
-        scores.append(clf.score(X_val, y_val))  # Store validation score
-
-    y_pred = clf.predict(X_test)  # Predict on the test set
-    accuracy = accuracy_score(y_test, y_pred)  # Calculate accuracy
+    n_samples = len(y)
+    n_classes = len(unique_classes)
     
-    return clf, accuracy, y_test, y_pred  # Return the trained model, accuracy, and predictions
+    # Ensure enough samples for stratification
+    if n_samples < n_classes:
+        raise ValueError("Not enough samples for stratification.")
+
+    # Set a minimum test size to ensure all classes are represented
+    test_size = max(1, n_classes)  # At least one sample per class
+    test_size = min(test_size, n_samples // 2)  # Ensure it's not more than half the samples
+
+    # Perform train-test split
+    X_rem, X_test, y_rem, y_test = train_test_split(X, y, test_size=test_size, random_state=100, stratify=y)
+
+    # Train SVM
+    svm_model = SVC(kernel='linear')
+    svm_model.fit(X_rem, y_rem)
+
+    # Make predictions
+    y_pred = svm_model.predict(X_test)
+
+    # Calculate accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+
+    return svm_model, accuracy, y_test, y_pred
