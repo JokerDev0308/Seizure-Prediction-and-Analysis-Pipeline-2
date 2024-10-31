@@ -1,26 +1,30 @@
 import os
 import pandas as pd
-import numpy as np
 from tqdm import tqdm
 
-from data_loader import get_participant_info
 from data_filter import filter_data
 from feature_extraction import extract_features, prepare_labels
 from svm_training import train_svm
 from utils import plot_confusion_matrix
 
 # Set random seed for reproducibility
+import numpy as np
 np.random.seed(100)
 
 # Create a directory for data if it doesn't exist
 os.makedirs('./database', exist_ok=True)
 
 if __name__ == "__main__":
-    # Load participant info
-    part_info_dict = get_participant_info()
+    # Mock participant info for demonstration purposes
+    part_info_dict = {
+        'chb01_01': {'Channels': ['FP1-F7', 'F7-T7', 'T7-P7'], 'label': 1},
+        'chb01_02': {'Channels': ['FP1-F7', 'F7-T7', 'T7-P7'], 'label': 0},
+        'chb01_03': {'Channels': ['FP1-F7', 'F7-T7', 'T7-P7'], 'label': 1},
+        'chb01_04': {'Channels': ['FP1-F7', 'F7-T7', 'T7-P7'], 'label': 0},
+    }
     
-    # Select participants to process
-    selected_participants = list(part_info_dict.keys())[:4]
+    # Select only 4 participants to process
+    selected_participants = list(part_info_dict.keys())[:7]
     
     data_frames = []  # Initialize a list to hold DataFrames of loaded data
     features_list = []  # Initialize a list to hold extracted features
@@ -46,11 +50,6 @@ if __name__ == "__main__":
 
     # Prepare labels
     labels = prepare_labels(part_info_dict, selected_participants)  # Ensure this returns the correct labels
-
-    # Simulate distinct labels for testing if necessary
-    if len(set(labels)) < 2:
-        print("Not enough distinct labels found. Simulating labels...")
-        labels = [i % 2 for i in range(len(selected_participants))]  # Alternate labels (0, 1)
 
     # Check sizes
     print(f'Number of features extracted: {X.shape[0]}')  # Should match the number of participants

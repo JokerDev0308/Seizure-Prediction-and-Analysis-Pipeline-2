@@ -84,4 +84,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 - The CHB-MIT database was developed as part of the Massachusetts Institute of Technology's research on epilepsy.
 - Thanks to the developers of the libraries used in this project.
-
