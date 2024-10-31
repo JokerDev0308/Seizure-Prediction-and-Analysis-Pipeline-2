@@ -4,6 +4,7 @@ import pyedflib
 import wfdb
 import numpy as np
 from urllib.request import urlretrieve
+import os
 
 def get_participant_info():
     """Retrieve participant information from the PhysioNet database."""
@@ -15,6 +16,7 @@ def get_participant_info():
     for part_code in part_codes:
         url = f"https://physionet.org/physiobank/database/chbmit/{part_code}/{part_code}-summary.txt"
         filename = f"./database/{part_code}/{part_code}-summary.txt"
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
         urlretrieve(url, filename)
         
         with open(filename, encoding='UTF-8') as f:
