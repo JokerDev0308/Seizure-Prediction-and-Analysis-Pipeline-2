@@ -48,28 +48,19 @@ def load_data(file, selected_channels=[]):
     classes = file.split("_")[0]
     local_filename = f"./database/{classes}/{file}.edf"
     os.makedirs(os.path.dirname(local_filename), exist_ok=True)
-    # Check if the file already exists
     if not os.path.isfile(local_filename):
         print(f"Downloading {file}...")
         url = f"https://physionet.org/physiobank/database/chbmit/{classes}/{file}.edf"
         urlretrieve(url, local_filename)
-    else:
-        print(f"Loading {file} from local storage.")
 
     try:
         f = pyedflib.EdfReader(local_filename)
         all_channels = f.getSignalLabels()
-        
-        # Print available channels for debugging
-        #print("Available channels in the file:", all_channels)
-        
-        # Filter out any unexpected channel names
         all_channels = [channel for channel in all_channels if 'Channels in EDF Files:' not in channel]
         
         if not selected_channels:
             selected_channels = all_channels
         
-        # Check if selected channels exist in the EDF file
         selected_channels = [channel for channel in selected_channels if channel in all_channels]
         
         if not selected_channels:
@@ -87,6 +78,3 @@ def load_data(file, selected_channels=[]):
     except Exception as e:
         print(f"Error loading {file}: {e}")
         return pd.DataFrame()
-
-
-

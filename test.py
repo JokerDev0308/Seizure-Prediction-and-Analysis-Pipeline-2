@@ -15,21 +15,22 @@ np.random.seed(100)
 # Create a directory for data if it doesn't exist
 os.makedirs('./database', exist_ok=True)
 
-if __name__ == "__main__":
-    # Load participant info
+def main():
+    """Main function to load data, extract features, and train an SVM model."""
+    
     part_info_dict = get_participant_info()
     
     # Select participants to process
-    selected_participants = list(part_info_dict.keys())[:10]
+    selected_participants = list(part_info_dict.keys())[:32]
     
     data_frames = []  # Initialize a list to hold DataFrames of loaded data
     features_list = []  # Initialize a list to hold extracted features
-
+    selected_channels = ["P7-O1","P3-O1", "P4-O2" , "P8-O2"]
     # Show progress bar while loading data
     for file in tqdm(selected_participants, desc="Loading Data"):
         # Simulated loading of data
-        df = pd.DataFrame(np.random.randn(100, len(part_info_dict[file]['Channels'])), 
-                          columns=part_info_dict[file]['Channels'])
+        df = pd.DataFrame(np.random.randn(100, len(selected_channels)), 
+                          columns=selected_channels)
         
         if not df.empty:
             filtered_data = filter_data(df)  # Apply filtering to the data
@@ -66,3 +67,6 @@ if __name__ == "__main__":
     # Print the accuracy and plot the confusion matrix
     print(f'Accuracy: {accuracy * 100:.2f}%')  # Print accuracy
     plot_confusion_matrix(y_test, y_pred)  # Plot confusion matrix
+
+if __name__ == "__main__":
+    main()
